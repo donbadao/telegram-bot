@@ -9,6 +9,8 @@ bot.onText(/\/hello/, (msg) => {
 });
 
 bot.on('message', (msg) => {
+    const badWordsList = ['chó', 'dmcs', 'phản động', 'cc'];
+
     const chatId = msg.chat.id;
     const messageId = msg.message_id;
     const text = msg.text;
