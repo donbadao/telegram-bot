@@ -1,0 +1,23 @@
+{
+  "name": "telegram-bot-donbadao",
+  "version": "1.0.0",
+  "description": "Bot Telegram",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/donbadao/telegram-bot.git"
+  },
+  "keywords": [
+    "bot",
+    "telegram"
+  ],
+  "author": "Nguyen Huu Le",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/donbadao/telegram-bot/issues"
+  },
+  "homepage": "https://github.com/donbadao/telegram-bot#readme"
+}
