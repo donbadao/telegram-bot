@@ -5,5 +5,5 @@ const bot = new TelegramBot(token, { polling: true });
 
 bot.onText(/\/hello/, (msg) => {
     const chatId = msg.chat.id;
-    bot.sendMessage(chatId, "Hello World từ modules action");
+    bot.sendMessage(chatId, "Hello World từ server Render");
 });
