@@ -2,7 +2,7 @@ const axios = require('axios');
 const moment = require('moment');
 
 module.exports = {
-    info(input) {
+    info(msg) {
         const chatId = msg.chat.id;
         bot.sendMessage(chatId, "Hello World từ modules action");
     },
