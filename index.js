@@ -2,6 +2,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const mysql = require('mysql2');
 const axios = require('axios');
 const moment = require('moment');
+const action = require('./modules/actions.js');
 
 // Tạo kết nối đến cơ sở dữ liệu
 const connection = mysql.createConnection({
@@ -35,10 +36,15 @@ const companyData = [];
 const itemsPerPage = 10;
 let currentPage = 1;
 
-const badWordsList = ['chó', 'dmcs', 'phản động'];
+const badWordsList = ['chó', 'dmcs', 'phản động', 'cc'];
 
 bot.onText(/\/companies/, (msg) => {
     getCompanies(msg);
+});
+
+bot.onText(/\/info/, (msg) => {
+    const chatId = msg.chat.id;
+    action.helloWorld(chatId, bot);
 });
 
 bot.on('message', (msg) => {
@@ -55,13 +61,13 @@ bot.on('message', (msg) => {
         const replyText = `[${userName}](tg://user?id=${msg.from.id}): Hệ thống đã ghi nhận yêu cầu của bạn`;
         bot.sendMessage(chatId, replyText, { reply_to_message_id: messageId, parse_mode: 'Markdown' });
     }
-    
+
     const containsBadWord = badWordsList.some(word => text.toLowerCase().includes(word.toLowerCase()));
 
     if (containsBadWord) {
         const userName = msg.from.username || `${msg.from.first_name} ${msg.from.last_name}`;
         const replyText = `[${userName}](tg://user?id=${msg.from.id}): Nội dung của bạn chứa từ ngữ không mong muốn. Vui lòng không sử dụng những từ này.`;
-        bot.sendMessage(chatId, replyText, { reply_to_message_id: messageId,parse_mode: 'Markdown' });
+        bot.sendMessage(chatId, replyText, { reply_to_message_id: messageId, parse_mode: 'Markdown' });
     }
 });
 
@@ -92,8 +98,9 @@ function getCompanies(msg) {
         for (let i = 0; i < itemsPerPage; i++) {
             response += `\n-Tên công ty : ${companies[i].company_name}
             \n-Mã số thuế: ${companies[i].company_taxcode}
-                        \n-Địa chỉ: ${companies[i].company_address}\n
-                        \n-Người đại diện: ${companies[i].company_owner}`;
+                        \n-Địa chỉ: ${companies[i].company_address}
+                        \n-Người đại diện: ${companies[i].company_owner}
+                        \n------------------------------------------------------------------------------------------`;
         }
         const keyboard = {
             inline_keyboard: [
@@ -107,31 +114,41 @@ function getCompanies(msg) {
 
 bot.onText(/\/weather/, (msg) => {
     const chatId = msg.chat.id;
-    let result = null;
-
-    let localtion = 'Soc Trang';
-
-
-
-    let ApiKey = 'c34d0b30de706ed953190741dcd852f2';
-    let urlAPI = `https://api.openweathermap.org/data/2.5/weather?q=${localtion}&appid=${ApiKey}&lang=vi&units=metric`;
-
-    axios.get(urlAPI)
-        .then(response => {
-            let dataResult = response.data;
-            if (dataResult.cod == 404) {
-                result = respodataResult.message;
-                bot.sendMessage(chatId, result);
-            }
-            result = `Thời tiết hiện tại của tỉnh ${localtion}
-      \n Thời tiết: ${dataResult.weather[0].description}
-      \n Nhiệt độ: ${Math.round(dataResult.main.temp)} độ C
-      \n Độ ẩm: ${dataResult.main.humidity}%
-      \n Sức gió: ${((dataResult.wind.speed) * 3.6).toFixed(2)} m/s
-      \n Mặt trời lặn: ${moment.unix(dataResult.sys.sunset).format("H:mm")}`;
-            bot.sendMessage(chatId, result);
-        });
+    action.weather(chatId, bot);
 });
+
+// bot.onText(/\/add (.+)/, (msg, match) => {
+//     const chatId = msg.chat.id;
+
+//     if (!match[1].includes('|')) {
+//         bot.sendMessage(chatId, 'Vui lòng nhập đúng định dạng.' + '\n\n' + 'Ví dụ:\n```\n/add name|email\n```', {
+//             parse_mode: 'Markdown'
+//         });
+//         return;
+//     }
+
+//     bot.sendChatAction(chatId, 'typing');
+
+//     const resp = match[1];
+//     const values = resp.split('|');
+
+//     const url = new URL(process.env.WEBHOOK_URL);
+//     url.searchParams.append('name', values[0]);
+//     url.searchParams.append('email', values[1]);
+// console.log(url);
+//     fetch(url)
+//         .then(res => res.json())
+//         .then(data => {
+//             if (data.status === 'success') {
+//                 bot.sendMessage(chatId, '✅ Đã thêm thành công.');
+//             } else {
+//                 bot.sendMessage(chatId, 'Không thể thêm. Vui lòng thử lại sau!');
+//             }
+//         })
+//         .catch(err => {
+//             bot.sendMessage(chatId, 'Đã có lỗi xảy ra. Vui lòng thử lại sau!');
+//         });
+// });
 
 // bot.onText(/\/g5r/, (msg) => {
 //     const chatId = msg.chat.id;
