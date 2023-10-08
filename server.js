@@ -12,17 +12,18 @@ bot.onText(/\/companies/, (msg => {
     const chatID = msg.chat.id;
     let result = "";
     axios.get('https://econtract-app.000webhostapp.com/econtract/index.php').then(response => {
-        console.log(response.data[0]);
-        // let companies = response.data;
-        // for (let i = 0; i < 10; i++) {
-        //     result += `\n-Tên công ty : ${companies[i].company_name}
-        //     \n-Mã số thuế: ${companies[i].company_taxcode}
-        //                 \n-Địa chỉ: ${companies[i].company_address}
-        //                 \n-Người đại diện: ${companies[i].company_owner}
-        //                 \n------------------------------------------------------------------------------------------`;
-        // }
+
+        let companies = response.data;
+        for (let i = 0; i < 10; i++) {
+            result += `\n-Tên công ty : ${companies[i].company_name}
+            \n-Mã số thuế: ${companies[i].company_taxcode}
+                        \n-Địa chỉ: ${companies[i].company_address}
+                        \n-Người đại diện: ${companies[i].company_owner}
+                        \n------------------------------------------------------------------------------------------`;
+        }
+        bot.sendMessage(chatID, result);
     });
-    bot.sendMessage(chatID, result);
+
 }));
 
 bot.on('message', (msg) => {
